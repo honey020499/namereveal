@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Party Button</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the party theme */
+        body {
+            background: url('https://www.vecteezy.com/free-vector/party-background') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .reveal {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .reveal.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="h-screen flex justify-center items-center bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
+
+    <div class="text-center">
+        <button id="fireBtn" class="bg-yellow-400 text-white font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-all duration-300 transform hover:scale-110">
+            Click me!
+        </button>
+        <div id="name" class="mt-4 text-8xl font-semibold text-white reveal">
+            Shanmukhi
+        </div>
+    </div>
+
+    <script>
+        const fireBtn = document.getElementById('fireBtn');
+        const nameDiv = document.getElementById('name');
+
+        fireBtn.addEventListener('click', () => {
+            // Trigger confetti animation
+            confetti({
+                particleCount: 300,
+                spread: 95,
+                origin: { x: 0, y: 0.9 },
+                
+            });
+
+              confetti({
+                particleCount: 300,
+                spread: 95,
+                origin: { x: 1, y: 0.9 },
+            });
+             fireBtn.style.display = 'none';
+            // Reveal the name
+            nameDiv.classList.add('show');
+        });
+    </script>
+
+</body>
+</html>
