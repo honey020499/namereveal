@@ -6,7 +6,6 @@
   <title>Brush Effect</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css2?family=Padyakke+Expanded+One&display=swap" rel="stylesheet">
-
   <style>
     * {
       margin: 0;
@@ -86,14 +85,17 @@
       ctxImg.drawImage(img, 0, 0, canvasImg.width, canvasImg.height);
       ctxImg.restore();
 
-      // Draw text (responsive)
-      ctxImg.font = 'italic 8vw "Potti Sreeramulu", sans-serif';
-      ctxImg.fillStyle = 'rgb(123, 49, 91)';
-      ctxImg.textAlign = 'center';
       const x = canvasImg.width / 1.45;
       const yStart = canvasImg.height / 3;
-      ctxImg.fillText('షణ్ముఖీ', x, yStart);
-      ctxImg.fillText('చైత్ర', x, yStart + 180);
+
+      // Load font then draw Telugu text
+      document.fonts.load('10vw "Potti Sreeramulu"').then(() => {
+        ctxImg.font = '8vw "Potti Sreeramulu", serif';
+        ctxImg.fillStyle = 'rgb(123, 49, 91)';
+        ctxImg.textAlign = 'center';
+        ctxImg.fillText('షణ్ముఖి', x, yStart);
+        ctxImg.fillText('చైత్ర', x, yStart + 120);
+      });
 
       drawMaskContent();
     }
@@ -102,11 +104,10 @@
       ctxMask.clearRect(0, 0, canvasMask.width, canvasMask.height);
 
       patternImg.onload = () => {
-        // Fill full screen with mask image (no repeat)
         ctxMask.globalCompositeOperation = 'source-over';
         ctxMask.drawImage(patternImg, 0, 0, canvasMask.width, canvasMask.height);
 
-        // Add top text
+        // Text on mask
         ctxMask.font = 'bold 4vw "Padyakke Expanded One", sans-serif';
         ctxMask.fillStyle = 'brown';
         ctxMask.textAlign = 'center';
@@ -120,7 +121,6 @@
         ctxMask.lineWidth = 300;
       };
 
-      // In case image is already loaded
       if (patternImg.complete) {
         patternImg.onload();
       }
@@ -142,25 +142,13 @@
     function launchConfetti() {
       sound.currentTime = 0;
       sound.play();
-
       setTimeout(() => {
         sound.pause();
         sound.currentTime = 0;
       }, 8000);
 
-      confetti({
-        particleCount: 800,
-        spread: 200,
-        origin: { x: 0, y: 1 },
-        colors: ['#ff4081', '#ffc107', '#4caf50', '#03a9f4', '#ff5722']
-      });
-
-      confetti({
-        particleCount: 800,
-        spread: 200,
-        origin: { x: 1, y: 1 },
-        colors: ['#ff4081', '#ffc107', '#4caf50', '#03a9f4', '#ff5722']
-      });
+      confetti({ particleCount: 800, spread: 200, origin: { x: 0, y: 1 }, colors: ['#ff4081', '#ffc107', '#4caf50', '#03a9f4', '#ff5722'] });
+      confetti({ particleCount: 800, spread: 200, origin: { x: 1, y: 1 }, colors: ['#ff4081', '#ffc107', '#4caf50', '#03a9f4', '#ff5722'] });
     }
 
     img.onload = resizeCanvas;
@@ -169,10 +157,8 @@
       confettiTriggered = false;
       sound.pause();
       sound.currentTime = 0;
-
       ctxImg.clearRect(0, 0, canvasImg.width, canvasImg.height);
       ctxMask.clearRect(0, 0, canvasMask.width, canvasMask.height);
-
       resizeCanvas();
     });
 
@@ -208,11 +194,9 @@
     canvasMask.addEventListener('mousemove', draw);
     canvasMask.addEventListener('mouseup', stopDraw);
     canvasMask.addEventListener('mouseout', stopDraw);
-
     canvasMask.addEventListener('touchstart', startDraw);
     canvasMask.addEventListener('touchmove', draw);
     canvasMask.addEventListener('touchend', stopDraw);
-
     window.addEventListener('resize', resizeCanvas);
   </script>
 </body>
