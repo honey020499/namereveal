@@ -1,60 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Party Button</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tsparticles/confetti@3.0.3/tsparticles.confetti.bundle.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Custom styles for the party theme */
-        body {
-            background: url('https://www.vecteezy.com/free-vector/party-background') no-repeat center center fixed;
-            background-size: cover;
-        }
-        .reveal {
-            opacity: 0;
-            transition: opacity 1s ease-in-out;
-        }
-        .reveal.show {
-            opacity: 1;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Brush Effect</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap" rel="stylesheet"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      cursor: url('xl.png'), auto;
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      display: block;
+    }
+    img {
+      display: none;
+    }
+    #resetBtn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      padding: 12px 24px;
+      background: #ff5b93;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 10;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+  </style>
 </head>
-<body class="h-screen flex justify-center items-center bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500">
+<body>
+  <canvas id="canvasImage"></canvas>
+  <canvas id="canvasMask"></canvas>
+  <img id="image" src="ba.png" alt="Background" />
+  <button id="resetBtn">Reset</button>
+  <audio id="revealSound" src="mu.mp3"></audio>
 
-    <div class="text-center">
-        <button id="fireBtn" class="bg-yellow-400 text-white font-bold py-3 px-6 rounded-lg hover:bg-yellow-500 transition-all duration-300 transform hover:scale-110">
-            Click me!
-        </button>
-        <div id="name" class="mt-4 text-8xl font-semibold text-white reveal">
-            Shanmukhi
-        </div>
-    </div>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const img = document.getElementById('image');
+    const canvasImg = document.getElementById('canvasImage');
+    const ctxImg = canvasImg.getContext('2d');
+    const canvasMask = document.getElementById('canvasMask');
+    const ctxMask = canvasMask.getContext('2d');
+    const resetBtn = document.getElementById('resetBtn');
+    const sound = document.getElementById('revealSound');
 
-    <script>
-        const fireBtn = document.getElementById('fireBtn');
-        const nameDiv = document.getElementById('name');
+    let confettiTriggered = false;
 
-        fireBtn.addEventListener('click', () => {
-            // Trigger confetti animation
-            confetti({
-                particleCount: 300,
-                spread: 95,
-                origin: { x: 0, y: 0.9 },
-                
-            });
+    function resizeCanvas() {
+      canvasImg.width = canvasMask.width = window.innerWidth;
+      canvasImg.height = canvasMask.height = window.innerHeight;
 
-              confetti({
-                particleCount: 300,
-                spread: 95,
-                origin: { x: 1, y: 0.9 },
-            });
-             fireBtn.style.display = 'none';
-            // Reveal the name
-            nameDiv.classList.add('show');
-        });
-    </script>
+      // Flip image
+      ctxImg.save();
+      ctxImg.translate(canvasImg.width, 0);
+      ctxImg.scale(-1, 1);
+      ctxImg.drawImage(img, 0, 0, canvasImg.width, canvasImg.height);
+      ctxImg.restore();
 
+      // Draw text (responsive size)
+      ctxImg.font = 'bold 8vw "Noto Sans Telugu", sans-serif';
+      ctxImg.fillStyle = 'rgb(123, 49, 91)';
+      ctxImg.textAlign = 'center';
+      const x = canvasImg.width / 1.45;
+      const yStart = canvasImg.height / 3;
+      ctxImg.fillText('షణ్ముఖి', x, yStart);
+      ctxImg.fillText('చైత్ర', x, yStart + 180);
+
+      drawMaskContent();
+    }
+
+    function drawMaskContent() {
+      ctxMask.clearRect(0, 0, canvasMask.width, canvasMask.height);
+      const patternImg = new Image();
+      patternImg.src = 'or.png';
+      patternImg.onload = () => {
+        ctxMask.globalCompositeOperation = 'source-over';
+        ctxMask.fillStyle = '#000';
+        ctxMask.fillRect(0, 0, canvasMask.width, canvasMask.height);
+
+        const pat = ctxMask.createPattern(patternImg, 'repeat');
+        ctxMask.fillStyle = pat;
+        ctxMask.fillRect(0, 0, canvasMask.width, canvasMask.height);
+
+        ctxMask.font = 'bold 90px "Noto Sans Telugu", sans-serif';
+        ctxMask.fillStyle = 'brown';
+        ctxMask.textAlign = 'center';
+        const x = canvasMask.width / 9.5;
+        const yStart = canvasMask.height / 2.7;
+        ctxMask.fillText('బ్రష్ తీసుకో', x, yStart);
+        ctxMask.fillText('నాన్న..', x, yStart + 100);
+
+        ctxMask.globalCompositeOperation = 'destination-out';
+        ctxMask.lineJoin = ctxMask.lineCap = 'round';
+        ctxMask.lineWidth = 300;
+      };
+    }
+
+    function checkRevealProgress() {
+      const data = ctxMask.getImageData(0, 0, canvasMask.width, canvasMask.height).data;
+      let cleared = 0;
+      for (let i = 3; i < data.length; i += 4) {
+        if (data[i] === 0) cleared++;
+      }
+      const percentCleared = cleared / (data.length / 4);
+      if (percentCleared > 0.5 && !confettiTriggered) {
+        confettiTriggered = true;
+        launchConfetti();
+      }
+    }
+
+    function launchConfetti() {
+      sound.currentTime = 0;
+      sound.play();
+
+      setTimeout(() => {
+        sound.pause();
+        sound.currentTime = 0;
+      }, 8000);
+
+      confetti({
+        particleCount: 800,
+        spread: 200,
+        origin: { x: 0, y: 1 },
+        colors: ['#ff4081', '#ffc107', '#4caf50', '#03a9f4', '#ff5722']
+      });
+
+      confetti({
+        particleCount: 800,
+        spread: 200,
+        origin: { x: 1, y: 1 },
+        colors: ['#ff4081', '#ffc107', '#4caf50', '#03a9f4', '#ff5722']
+      });
+    }
+
+    img.onload = () => {
+      resizeCanvas();
+    };
+
+    resetBtn.addEventListener('click', () => {
+      confettiTriggered = false;
+      sound.pause();
+      sound.currentTime = 0;
+
+      ctxImg.clearRect(0, 0, canvasImg.width, canvasImg.height);
+      ctxMask.clearRect(0, 0, canvasMask.width, canvasMask.height);
+
+      resizeCanvas();
+    });
+
+    let drawing = false;
+    const getPos = e => {
+      const rect = canvasMask.getBoundingClientRect();
+      return {
+        x: e.touches ? e.touches[0].clientX - rect.left : e.clientX - rect.left,
+        y: e.touches ? e.touches[0].clientY - rect.top : e.clientY - rect.top
+      };
+    };
+
+    function startDraw(e) {
+      drawing = true;
+      const pos = getPos(e);
+      ctxMask.beginPath();
+      ctxMask.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      const pos = getPos(e);
+      ctxMask.lineTo(pos.x, pos.y);
+      ctxMask.stroke();
+      checkRevealProgress();
+    }
+
+    function stopDraw() {
+      drawing = false;
+    }
+
+    canvasMask.addEventListener('mousedown', startDraw);
+    canvasMask.addEventListener('mousemove', draw);
+    canvasMask.addEventListener('mouseup', stopDraw);
+    canvasMask.addEventListener('mouseout', stopDraw);
+
+    canvasMask.addEventListener('touchstart', startDraw);
+    canvasMask.addEventListener('touchmove', draw);
+    canvasMask.addEventListener('touchend', stopDraw);
+
+    window.addEventListener('resize', resizeCanvas);
+  </script>
 </body>
 </html>
