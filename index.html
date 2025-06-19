@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Brush Effect</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Padyakke+Expanded+One&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
@@ -44,6 +46,12 @@
       z-index: 10;
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
+    @font-face {
+  font-family: 'Potti Sreeramulu';
+  src: url('PottiSreeramuluRegular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
   </style>
 </head>
 <body>
@@ -77,12 +85,12 @@
       ctxImg.restore();
 
       // Draw text (responsive size)
-      ctxImg.font = 'bold 8vw "Noto Sans Telugu", sans-serif';
+      ctxImg.font = 'italic 8vw "Potti Sreeramulu", sans-serif';
       ctxImg.fillStyle = 'rgb(123, 49, 91)';
       ctxImg.textAlign = 'center';
       const x = canvasImg.width / 1.45;
       const yStart = canvasImg.height / 3;
-      ctxImg.fillText('షణ్ముఖి', x, yStart);
+      ctxImg.fillText('షణ్ముఖీ', x, yStart);
       ctxImg.fillText('చైత్ర', x, yStart + 180);
 
       drawMaskContent();
@@ -101,7 +109,7 @@
         ctxMask.fillStyle = pat;
         ctxMask.fillRect(0, 0, canvasMask.width, canvasMask.height);
 
-        ctxMask.font = 'bold 90px "Noto Sans Telugu", sans-serif';
+        ctxMask.font = 'bold 100px "Padyakke Expanded One", sans-serif';
         ctxMask.fillStyle = 'brown';
         ctxMask.textAlign = 'center';
         const x = canvasMask.width / 9.5;
