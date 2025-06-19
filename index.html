@@ -47,11 +47,11 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     @font-face {
-  font-family: 'Potti Sreeramulu';
-  src: url('PottiSreeramuluRegular.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
-}
+      font-family: 'Potti Sreeramulu';
+      src: url('PottiSreeramuluRegular.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
   </style>
 </head>
 <body>
@@ -72,6 +72,8 @@
     const sound = document.getElementById('revealSound');
 
     let confettiTriggered = false;
+    let patternImg = new Image();
+    patternImg.src = 'or.png';
 
     function resizeCanvas() {
       canvasImg.width = canvasMask.width = window.innerWidth;
@@ -84,7 +86,7 @@
       ctxImg.drawImage(img, 0, 0, canvasImg.width, canvasImg.height);
       ctxImg.restore();
 
-      // Draw text (responsive size)
+      // Draw text (responsive)
       ctxImg.font = 'italic 8vw "Potti Sreeramulu", sans-serif';
       ctxImg.fillStyle = 'rgb(123, 49, 91)';
       ctxImg.textAlign = 'center';
@@ -98,21 +100,17 @@
 
     function drawMaskContent() {
       ctxMask.clearRect(0, 0, canvasMask.width, canvasMask.height);
-      const patternImg = new Image();
-      patternImg.src = 'or.png';
+
       patternImg.onload = () => {
+        // Fill full screen with mask image (no repeat)
         ctxMask.globalCompositeOperation = 'source-over';
-        ctxMask.fillStyle = '#000';
-        ctxMask.fillRect(0, 0, canvasMask.width, canvasMask.height);
+        ctxMask.drawImage(patternImg, 0, 0, canvasMask.width, canvasMask.height);
 
-        const pat = ctxMask.createPattern(patternImg, 'repeat');
-        ctxMask.fillStyle = pat;
-        ctxMask.fillRect(0, 0, canvasMask.width, canvasMask.height);
-
+        // Add top text
         ctxMask.font = 'bold 100px "Padyakke Expanded One", sans-serif';
         ctxMask.fillStyle = 'brown';
         ctxMask.textAlign = 'center';
-        const x = canvasMask.width / 9.5;
+        const x = canvasMask.width / 7;
         const yStart = canvasMask.height / 2.7;
         ctxMask.fillText('బ్రష్ తీసుకో', x, yStart);
         ctxMask.fillText('నాన్న..', x, yStart + 100);
@@ -121,6 +119,11 @@
         ctxMask.lineJoin = ctxMask.lineCap = 'round';
         ctxMask.lineWidth = 300;
       };
+
+      // In case image is already loaded
+      if (patternImg.complete) {
+        patternImg.onload();
+      }
     }
 
     function checkRevealProgress() {
@@ -160,9 +163,7 @@
       });
     }
 
-    img.onload = () => {
-      resizeCanvas();
-    };
+    img.onload = resizeCanvas;
 
     resetBtn.addEventListener('click', () => {
       confettiTriggered = false;
