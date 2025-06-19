@@ -93,7 +93,7 @@
       const x = canvasImg.width / 1.45;
       const yStart = canvasImg.height / 3;
       ctxImg.fillText('షణ్ముఖీ', x, yStart);
-      ctxImg.fillText('చైత్ర', x, yStart + 180);
+      ctxImg.fillText('చైత్ర', x, yStart + 130);
 
       drawMaskContent();
     }
@@ -107,7 +107,7 @@
         ctxMask.drawImage(patternImg, 0, 0, canvasMask.width, canvasMask.height);
 
         // Add top text
-        ctxMask.font = 'bold 4vw "Padyakke Expanded One", sans-serif';
+        ctxMask.font = 'bold 5vw "Padyakke Expanded One", sans-serif';
         ctxMask.fillStyle = 'brown';
         ctxMask.textAlign = 'center';
         const x = canvasMask.width / 7;
